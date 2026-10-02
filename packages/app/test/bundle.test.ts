@@ -10,7 +10,7 @@ import { readFileSync } from 'node:fs';
 describe('built bundle integrity', () => {
   it('dist bundle contains all app subsystems', () => {
     const js = readFileSync('dist/assets/' + readFileSync('dist/index.html', 'utf8').match(/assets\/index-[\w-]+\.js/)![0]!.split('/').pop()!, 'utf8');
-    for (const marker of ['sps-canvas', 'sps-sidebar', 'Export as SVG', 'Share', 'Snap to Grid', 'Path Operations', 'serviceWorker', 'data-sps', 'Start Path From Here', 'Reverse Subpath']) {
+    for (const marker of ['sps-canvas', 'sps-commands-sidebar', 'sps-ribbon', 'Export as SVG', 'Share', 'Snap to Grid', 'Path Operations', 'serviceWorker', 'data-sps', 'Start Path From Here', 'Reverse Subpath']) {
       expect(js, marker).toContain(marker);
     }
   });
@@ -29,7 +29,7 @@ describe('built bundle integrity', () => {
 
   it('service worker is emitted', () => {
     const sw = readFileSync('dist/sw.js', 'utf8');
-    expect(sw).toContain('sps-v1');
+    expect(sw).toBe(readFileSync('public/sw.js', 'utf8'));
   });
 
   void vi;
