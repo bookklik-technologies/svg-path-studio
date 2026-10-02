@@ -1,0 +1,24 @@
+{
+  "name": "svg-path-studio",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Edit SVG paths with precision — in your browser, no framework attached.",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@10.34.5",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "pnpm -r dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^9.39.0",
+    "typescript-eslint": "^8.46.0"
+  }
+}
