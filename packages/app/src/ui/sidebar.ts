@@ -56,11 +56,16 @@ export function buildPathPanel(store: Store, _renderer: Renderer): HTMLElement {
     if (ta.value !== d && document.activeElement !== ta) ta.value = d;
     charcount.textContent = `${ta.value.length}`;
     errLine.textContent = s.parseError ? `⚠ ${s.parseError.message}` : '';
+    ta.setAttribute('aria-invalid', String(!!s.parseError));
   });
 
   const errLine = document.createElement('div');
   errLine.className = 'sps-error';
+  errLine.id = 'sps-path-error';
   errLine.setAttribute('role', 'alert');
+  ta.setAttribute('aria-describedby', errLine.id);
+  ta.setAttribute('aria-invalid', String(!!store.state.parseError));
+  errLine.textContent = store.state.parseError ? `⚠ ${store.state.parseError.message}` : '';
 
   const btnRow = document.createElement('div');
   btnRow.className = 'sps-field-row';

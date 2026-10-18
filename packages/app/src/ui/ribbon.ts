@@ -21,6 +21,7 @@ function button(label: string, iconName: string, action: () => void, large = tru
   b.type = 'button';
   b.className = `sps-btn ${large ? 'sps-ribbon-button' : 'sps-ribbon-small'}`;
   b.title = label;
+  b.setAttribute('aria-label', label);
   b.innerHTML = `${icon(iconName)}<span>${label}</span>`;
   b.addEventListener('click', action);
   return b;
@@ -46,7 +47,8 @@ function group(panel: HTMLElement, title: string, ...controls: HTMLElement[]): H
 }
 
 function labelAction(b: HTMLButtonElement, text: string): void {
-  b.className = 'sps-btn sps-ribbon-button';
+  b.classList.remove('sps-btn-icon');
+  b.classList.add('sps-ribbon-button');
   b.type = 'button';
   b.title = b.getAttribute('aria-label') ?? text;
   const label = document.createElement('span');
@@ -87,15 +89,44 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
   const about = button('About', 'more', actions.about, false);
   titlebar.append(brand, quick, documentLabel, mode, theme, about);
 
+  const tabstrip = document.createElement('div');
+  tabstrip.className = 'sps-ribbon-tabstrip';
   const tabs = document.createElement('div');
   tabs.className = 'sps-ribbon-tabs';
   tabs.setAttribute('role', 'tablist');
   tabs.setAttribute('aria-label', 'Ribbon tabs');
   const content = document.createElement('div');
   content.className = 'sps-ribbon-content';
+  content.id = 'sps-ribbon-content';
   const tabButtons: HTMLButtonElement[] = [];
   const panels: HTMLElement[] = [];
   let activeIndex = 0;
+  const scrollTools = document.createElement('div');
+  scrollTools.className = 'sps-ribbon-scroll-tools';
+  scrollTools.setAttribute('role', 'group');
+  scrollTools.setAttribute('aria-label', 'Ribbon scrolling');
+  const scrollPanel = (direction: number): void => {
+    const panel = panels[activeIndex];
+    panel.scrollBy({ left: direction * Math.max(160, panel.clientWidth * 0.75), behavior: 'instant' });
+  };
+  const previous = button('Scroll ribbon left', 'chevron', () => scrollPanel(-1), false);
+  const next = button('Scroll ribbon right', 'chevron', () => scrollPanel(1), false);
+  previous.classList.add('sps-ribbon-scroll-previous');
+  next.classList.add('sps-ribbon-scroll-next');
+  scrollTools.append(previous, next);
+  const refreshOverflow = (): void => {
+    const panel = panels[activeIndex];
+    const overflow = panel.scrollWidth > panel.clientWidth + 1;
+    const canLeft = panel.scrollLeft > 1;
+    const canRight = panel.scrollLeft + panel.clientWidth < panel.scrollWidth - 1;
+    scrollTools.hidden = !overflow || ribbon.classList.contains('sps-ribbon-collapsed');
+    previous.disabled = !canLeft;
+    next.disabled = !canRight;
+    previous.setAttribute('aria-controls', panel.id);
+    next.setAttribute('aria-controls', panel.id);
+    content.classList.toggle('sps-can-scroll-left', overflow && canLeft);
+    content.classList.toggle('sps-can-scroll-right', overflow && canRight);
+  };
   const select = (index: number, focus = false): void => {
     ribbon.classList.remove('sps-ribbon-collapsed');
     const toggle = ribbon.querySelector<HTMLButtonElement>('.sps-ribbon-collapse');
@@ -111,6 +142,7 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
       panels[i].hidden = i !== index;
     });
     if (focus) tabButtons[index].focus();
+    requestAnimationFrame(refreshOverflow);
   };
   for (const name of ['Home', 'Insert', 'Transform', 'View']) {
     const index = tabButtons.length;
@@ -134,6 +166,14 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
         : (activeIndex + (e.key === 'ArrowRight' ? 1 : -1) + tabButtons.length) % tabButtons.length;
       select(next, true);
     });
+    panel.addEventListener('scroll', refreshOverflow, { passive: true });
+    panel.addEventListener('focusin', (event) => {
+      const target = event.target as HTMLElement;
+      const bounds = panel.getBoundingClientRect();
+      const item = target.getBoundingClientRect();
+      if (item.left < bounds.left + 12) panel.scrollBy({ left: item.left - bounds.left - 12 });
+      else if (item.right > bounds.right - 12) panel.scrollBy({ left: item.right - bounds.right + 12 });
+    });
     tabButtons.push(tab);
     panels.push(panel);
     tabs.append(tab);
@@ -148,13 +188,18 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
   const fileInput = pathControls.querySelector<HTMLInputElement>('input[type="file"]')!;
   const [open, save, clear, copy, add] = [...pathControls.querySelectorAll<HTMLButtonElement>('button')];
   [open, save, clear, copy, add].forEach((b, i) => labelAction(b, ['Open path', 'Save path', 'Clear', 'Copy path', 'Add point'][i]));
+  clear.classList.add('sps-btn-danger');
+  add.setAttribute('aria-label', 'Add point');
+  add.title = 'Add point (l)';
   group(home, 'File & clipboard', open, save, copy, fileInput);
   group(home, 'Edit', clear, add);
   const data = document.createElement('div');
   data.className = 'sps-ribbon-path-data';
   data.append(textarea, error);
-  group(home, 'Path data', data);
-  group(home, 'Export & share', button('Export SVG', 'download', actions.exportSvg), button('Share', 'share', actions.share));
+  group(home, 'Path data', data).classList.add('sps-ribbon-data-group');
+  const exportSvg = button('Export SVG', 'download', actions.exportSvg);
+  exportSvg.classList.add('sps-btn-outline');
+  group(home, 'Export & share', exportSvg, button('Share', 'share', actions.share));
 
   const commandNames: Record<CommandType, string> = {
     M: 'Move', L: 'Line', H: 'Horizontal', V: 'Vertical', C: 'Cubic curve',
@@ -163,11 +208,27 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
   const palette = document.createElement('div');
   palette.className = 'sps-insert-palette';
   const insertButtons = new Map<CommandType, HTMLButtonElement>();
+  const prerequisites: Partial<Record<CommandType, string>> = {
+    S: 'Smooth cubic requires a preceding Cubic curve (C) or Smooth cubic (S).',
+    T: 'Smooth quadratic requires a preceding Quadratic (Q) or Smooth quadratic (T).',
+    Z: 'Close path requires a preceding command that is not Close path (Z).'
+  };
   for (const type of ['M', 'L', 'H', 'V', 'C', 'S', 'Q', 'T', 'A', 'Z'] as CommandType[]) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'sps-btn sps-insert-command';
     b.title = `${commandNames[type]} (${type.toLowerCase()})`;
+    b.setAttribute('aria-label', `${commandNames[type]} (${type})`);
+    b.setAttribute('aria-keyshortcuts', type.toLowerCase());
+    if (prerequisites[type]) {
+      b.title += ` — ${prerequisites[type]}`;
+      const description = document.createElement('span');
+      description.className = 'sps-sr-only';
+      description.id = `sps-command-help-${type.toLowerCase()}`;
+      description.textContent = prerequisites[type]!;
+      palette.append(description);
+      b.setAttribute('aria-describedby', description.id);
+    }
     const letter = document.createElement('b');
     letter.textContent = type;
     const label = document.createElement('span');
@@ -201,10 +262,12 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
     store.update((s) => { s.referenceImage = null; });
     URL.revokeObjectURL(image.url);
   });
-  group(insert, 'Reference', button('Reference image', 'image', actions.referenceImage), clearImage);
+  group(insert, 'Reference', button('Reference image', 'image', actions.referenceImage), clearImage)
+    .classList.add('sps-ribbon-reference');
   const insertionHint = document.createElement('p');
   insertionHint.className = 'sps-ribbon-note';
-  insertionHint.textContent = 'Choose a command, then click on the canvas to place it. Press Esc to cancel.';
+  insertionHint.setAttribute('role', 'status');
+  insertionHint.setAttribute('aria-live', 'polite');
   group(insert, 'Placement', insertionHint);
 
   const operations = body(buildOpsPanel(store)).firstElementChild!;
@@ -237,12 +300,15 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
   viewBox.className = 'sps-ribbon-viewbox-controls';
   viewBox.append(viewBoxFields, viewBoxLock);
   const [snap, preview, fill, minify, ticks, numbers] = [...checks.children] as HTMLElement[];
-  group(view, 'Navigate', button('Fit path', 'fit', () => renderer.fitToPath()),
-    button('Zoom in', 'zoomIn', actions.zoomIn), button('Zoom out', 'zoomOut', actions.zoomOut),
-    button('Reset view', 'center', actions.resetView));
+  const navigation = document.createElement('div');
+  navigation.className = 'sps-ribbon-navigation';
+  navigation.append(button('Fit path', 'fit', () => renderer.fitToPath(), false),
+    button('Zoom in', 'zoomIn', actions.zoomIn, false), button('Reset view', 'center', actions.resetView, false),
+    button('Zoom out', 'zoomOut', actions.zoomOut, false));
+  group(view, 'Navigate', navigation);
   group(view, 'ViewBox', viewBox).classList.add('sps-ribbon-viewbox');
   const gridChecks = document.createElement('div');
-  gridChecks.className = 'sps-ribbon-stack';
+  gridChecks.className = 'sps-ribbon-stack sps-ribbon-grid-checks';
   gridChecks.append(snap, ticks, numbers);
   group(view, 'Grid & rulers', gridChecks);
   const displayChecks = document.createElement('div');
@@ -269,13 +335,17 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
     collapse.setAttribute('aria-expanded', String(!collapsed));
     collapse.title = collapsed ? 'Expand ribbon' : 'Collapse ribbon';
     collapse.setAttribute('aria-label', collapse.title);
+    refreshOverflow();
   }, false);
   collapse.classList.add('sps-ribbon-collapse');
   collapse.setAttribute('aria-expanded', 'true');
   collapse.setAttribute('aria-label', 'Collapse ribbon');
-  tabs.append(collapse);
-  ribbon.append(titlebar, tabs, content);
+  collapse.setAttribute('aria-controls', content.id);
+  tabstrip.append(tabs, scrollTools, collapse);
+  ribbon.append(titlebar, tabstrip, content);
   select(0);
+  const resizeObserver = new ResizeObserver(refreshOverflow);
+  panels.forEach((panel) => resizeObserver.observe(panel));
 
   const refresh = (): void => {
     undo.disabled = !store.canUndo();
@@ -289,6 +359,12 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
     insertButtons.get('T')!.disabled = !preceding || !['Q', 'T'].includes(preceding.type);
     insertButtons.get('Z')!.disabled = !preceding || preceding.type === 'Z';
     for (const [type, b] of insertButtons) b.setAttribute('aria-pressed', String(store.state.insertion?.type === type));
+    add.setAttribute('aria-pressed', String(store.state.insertion?.type === 'L'));
+    const activeCommand = store.state.insertion?.type;
+    const hint = activeCommand
+      ? `${commandNames[activeCommand]} (${activeCommand}) active. Click on the canvas to place it. Press Esc to cancel.`
+      : 'Choose a command, then click on the canvas to place it. Press Esc to cancel.';
+    if (insertionHint.textContent !== hint) insertionHint.textContent = hint;
   };
   store.subscribe(refresh);
   refresh();
