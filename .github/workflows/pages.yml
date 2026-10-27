@@ -29,6 +29,12 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build core and app
         run: pnpm build
+      - name: Build documentation
+        run: pnpm docs:build
+      - name: Bundle documentation under /docs/
+        run: |
+          mkdir -p packages/app/dist/docs
+          cp -r docs/.vitepress/dist/* packages/app/dist/docs/
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
       - name: Upload site

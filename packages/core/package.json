@@ -1,7 +1,7 @@
 {
   "name": "@bookklik/svg-path-studio",
-  "version": "0.2.1",
-  "description": "Zero-dependency SVG path engine and headless editor for Node.js and browser embeds.",
+  "version": "0.2.2",
+  "description": "Zero-dependency SVG path engine and headless editor — parse, transform and optimize path data, with undo/redo state for custom editor UIs. TypeScript, ESM, Node.js and browsers.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
@@ -22,7 +22,14 @@
   "bugs": {
     "url": "https://github.com/bookklik-technologies/svg-path-studio/issues"
   },
-  "keywords": ["svg", "path", "editor", "headless", "embed", "typescript"],
+  "keywords": [
+    "svg",
+    "path",
+    "editor",
+    "headless",
+    "embed",
+    "typescript"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

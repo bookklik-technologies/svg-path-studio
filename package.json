@@ -1,7 +1,7 @@
 {
   "name": "@bookklik/svg-path-studio",
   "private": false,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Edit SVG paths with precision — in your browser, no framework attached.",
   "license": "MIT",
   "type": "module",

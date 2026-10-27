@@ -60,7 +60,7 @@ From `packages/core`, after reviewing the tarball:
 ```sh
 npm login
 npm whoami
-npm publish ./bookklik-svg-path-studio-0.2.1.tgz --access public
+npm publish ./bookklik-svg-path-studio-0.2.2.tgz --access public
 ```
 
 Use your actual tarball filename. Package/scope ownership and registry availability must be checked by the publisher; they are not assumed by local validation. See [`PUBLISHING.md`](https://github.com/bookklik-technologies/svg-path-studio/blob/main/PUBLISHING.md) in the repository for the complete procedure.

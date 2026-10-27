@@ -1,17 +1,19 @@
 import { defineConfig } from 'vitepress'
 
-// For GitHub Pages deployment under a repository subpath, uncomment and adjust:
-// base: '/svg-path-studio-docs/',
+// Deployed beside the app at bookklik-technologies.github.io/svg-path-studio/docs/.
+// VitePress serves at this base in dev too, so links stay consistent locally.
+const base = '/svg-path-studio/docs/'
 
 export default defineConfig({
+  base,
   lang: 'en-US',
-  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/icon.svg' }]],
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: `${base}icon.svg` }]],
   title: 'SVG Path Studio',
   titleTemplate: '%s | SVG Path Studio',
   description:
     'Edit SVG paths with precision — in your browser, no framework attached. An interactive canvas, ribbon UI, transforms, optimizer, and a zero-dependency headless path engine.',
   themeConfig: {
-    logo: { src: '/icon.svg', alt: 'SVG Path Studio' },
+    logo: { src: '/svg-path-studio/docs/icon.svg', alt: 'SVG Path Studio' },
     siteTitle: 'SVG Path Studio',
     nav: [
       { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
