@@ -11,12 +11,12 @@
   },
   "scripts": {
     "dev": "pnpm -r dev",
-    "build": "pnpm -r build",
+    "build": "pnpm --filter @bookklik/svg-path-studio build && pnpm --filter @svg-path-studio/app build",
     "docs": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
-    "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm --filter @bookklik/svg-path-studio test && pnpm --filter @svg-path-studio/app test",
+    "typecheck": "pnpm --filter @bookklik/svg-path-studio typecheck && pnpm --filter @svg-path-studio/app typecheck",
     "lint": "eslint .",
     "package:check": "pnpm --filter @bookklik/svg-path-studio build && node scripts/check-package.mjs"
   },
