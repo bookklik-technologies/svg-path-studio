@@ -5,7 +5,7 @@ Only `packages/core` (`@bookklik/svg-path-studio`) is publishable. The repositor
 ## Before release
 
 1. Confirm you control the `@bookklik` npm scope and that the intended package name/version is available. If using a different scope, update the core name, the app's workspace dependency, documentation and lockfile together.
-2. Confirm the release version in `packages/core/package.json` and commit/review your release changes yourself. The release version is `0.2.0`; bump it if that version has already been published.
+2. Confirm the release version in `packages/core/package.json` and commit/review your release changes yourself. The release version is `0.2.1`; bump it if that version has already been published.
 3. From the repository root, install and validate:
 
 ```sh
@@ -31,7 +31,7 @@ npm pack
 `prepack` builds the library before packaging. The tarball contains compiled ESM, TypeScript declarations, source maps with embedded sources, README, LICENSE and package metadata. It does not contain the app or workspace dependencies. Install the tarball into a separate consumer project if you want to verify integration before publishing:
 
 ```sh
-npm install /absolute/path/to/bookklik-svg-path-studio-0.2.0.tgz
+npm install /absolute/path/to/bookklik-svg-path-studio-0.2.1.tgz
 ```
 
 Use the actual filename printed by `npm pack` if the package name or version changed. Both imports are public:
@@ -48,7 +48,7 @@ From `packages/core`, after reviewing the tarball:
 ```sh
 npm login
 npm whoami
-npm publish ./bookklik-svg-path-studio-0.2.0.tgz --access public
+npm publish ./bookklik-svg-path-studio-0.2.1.tgz --access public
 ```
 
 Use your actual tarball filename. Complete npm's authentication/2FA prompts. Publishing the inspected tarball releases exactly those packaged files; do not publish from the repository root. No credentials belong in this repository. Package/scope ownership and registry availability must be checked by the publisher; they are not assumed by local validation.

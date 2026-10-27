@@ -2,7 +2,7 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/coverage/**', '**/*.config.js', 'packages/app/dist/**'] },
+  { ignores: ['**/dist/**', '**/coverage/**', '**/cache/**', '**/*.config.js', '**/*.config.mts', 'packages/app/dist/**'] },
   { files: ['**/public/**/*.js'], languageOptions: { globals: { self: 'readonly', caches: 'readonly', fetch: 'readonly', clients: 'readonly', skipWaiting: 'readonly' } } },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

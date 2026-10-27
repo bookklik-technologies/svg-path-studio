@@ -1,7 +1,7 @@
 {
   "name": "@bookklik/svg-path-studio",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Edit SVG paths with precision — in your browser, no framework attached.",
   "license": "MIT",
   "type": "module",
@@ -12,6 +12,9 @@
   "scripts": {
     "dev": "pnpm -r dev",
     "build": "pnpm -r build",
+    "docs": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
@@ -20,6 +23,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^9.39.0",
-    "typescript-eslint": "^8.46.0"
+    "typescript-eslint": "^8.46.0",
+    "vitepress": "^1.6.4"
   }
 }

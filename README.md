@@ -38,6 +38,10 @@ pnpm dev          # editor at http://localhost:5173
 
 Requires Node ≥ 18 and pnpm ≥ 9.
 
+## Documentation
+
+This repository ships a [VitePress documentation site](./docs/README.md) (`pnpm docs` to serve it locally, `pnpm docs:build` to build).
+
 ## GitHub Pages
 
 1. Push this project to [`bookklik-technologies/svg-path-studio`](https://github.com/bookklik-technologies/svg-path-studio) with a `main` branch.
