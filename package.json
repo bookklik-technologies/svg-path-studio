@@ -1,5 +1,5 @@
 {
-  "name": "svg-path-studio",
+  "name": "@bookklik/svg-path-studio",
   "private": true,
   "version": "0.2.0",
   "description": "Edit SVG paths with precision — in your browser, no framework attached.",
