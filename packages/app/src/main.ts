@@ -7,10 +7,10 @@ import { attachCanvasEvents, zoomAt } from './render/canvasEvents.js';
 import { buildRibbon } from './ui/ribbon.js';
 import { buildCommandsSidebar } from './ui/commands.js';
 import { openExportDialog, openShareDialog, openAboutDialog } from './ui/dialogs.js';
-import { makeShareUrl } from './io/share.js';
+import { makeShareUrl, applyFromHash, persistSession, readSession } from './io/share.js';
 import { attachKeyboard } from './ui/keyboard.js';
 import { icon } from './ui/icons.js';
-import { applyFromHash, persistSession, readSession } from './io/share.js';
+import { toast } from './ui/toast.js';
 
 const appRoot = document.getElementById('app')!;
 appRoot.classList.add('sps-root');
@@ -107,7 +107,10 @@ attachKeyboard(store, () => {
 // Boot sequence: URL hash takes precedence over localStorage session.
 void (async () => {
   const applied = await applyFromHash(store, location.hash);
-  if (!applied) {
+  if (applied === 'invalid') {
+    toast('This share link is invalid or incomplete', 'error');
+  }
+  if (applied !== 'ok') {
     const session = readSession();
     if (session?.d) {
       store.update((s) => {
@@ -122,8 +125,17 @@ void (async () => {
   }
 })();
 
-// Persist session on every committed change.
-store.subscribe(() => persistSession(store));
+// Persist the session, debounced: drags emit on every pointermove and the
+// synchronous localStorage write would otherwise run once per frame.
+let persistTimer: ReturnType<typeof setTimeout> | undefined;
+store.subscribe(() => {
+  clearTimeout(persistTimer);
+  persistTimer = setTimeout(() => persistSession(store), 300);
+});
+window.addEventListener('pagehide', () => {
+  clearTimeout(persistTimer);
+  persistSession(store);
+});
 
 // Service worker for offline use.
 if ('serviceWorker' in navigator) {

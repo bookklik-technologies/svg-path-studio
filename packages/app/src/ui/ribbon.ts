@@ -2,6 +2,7 @@
 import { SpsCommand } from '@svg-path-studio/core';
 import type { CommandType } from '@svg-path-studio/core';
 import type { Store } from '../state/store.js';
+import type { Theme } from '../state/store.js';
 import type { Renderer } from '../render/renderer.js';
 import { buildPathPanel, buildConfigPanel, buildOpsPanel } from './sidebar.js';
 import { icon } from './icons.js';
@@ -86,6 +87,7 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
   const theme = button('Theme', 'theme', () => store.update((s) => {
     s.settings.theme = s.settings.theme === 'dark' ? 'light' : 'dark';
   }), false);
+  let themeIconState: Theme | null = null;
   const about = button('About', 'more', actions.about, false);
   titlebar.append(brand, quick, documentLabel, mode, theme, about);
 
@@ -354,6 +356,11 @@ export function buildRibbon(store: Store, renderer: Renderer, actions: RibbonAct
     commandsToggle.checked = store.state.settings.commandsSidebar;
     mode.textContent = store.state.settings.preview ? 'Preview' : 'Edit path';
     documentLabel.textContent = `${store.state.path.commands.length} commands`;
+    // Theme button shows the mode it switches to: sun in dark, moon in light.
+    if (themeIconState !== store.state.settings.theme) {
+      themeIconState = store.state.settings.theme;
+      theme.innerHTML = `${icon(themeIconState === 'dark' ? 'sun' : 'moon')}<span>Theme</span>`;
+    }
     const preceding = store.state.selection ?? store.state.path.commands.at(-1);
     insertButtons.get('S')!.disabled = !preceding || !['C', 'S'].includes(preceding.type);
     insertButtons.get('T')!.disabled = !preceding || !['Q', 'T'].includes(preceding.type);

@@ -22,6 +22,7 @@ const iconNames: Record<string, string> = {
   fit: 'focus',
   center: 'crosshair',
   theme: 'moon',
+  sun: 'sun',
   lock: 'lock-closed',
   more: 'horizontal-3-dots',
   chevron: 'chevron-down',

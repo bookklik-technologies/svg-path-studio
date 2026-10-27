@@ -16,6 +16,7 @@ export function attachCanvasEvents(renderer: Renderer, store: Store): void {
   let dragCmd: SpsCommand | null = null;
   let dragCi = 0;
   let moved = false;
+  let cancelled = false;
   let spaceHeld = false;
 
   document.addEventListener('keydown', (e) => {
@@ -33,6 +34,13 @@ export function attachCanvasEvents(renderer: Renderer, store: Store): void {
     spaceHeld = false;
     svg.classList.remove('sps-pan-ready');
     finish();
+  });
+
+  // Esc mid-drag: roll the gesture back and ignore movement until release.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || (mode !== 'drag-end' && mode !== 'drag-control')) return;
+    cancelled = true;
+    store.cancelGesture();
   });
 
   const startPan = (e: PointerEvent): void => {
@@ -67,6 +75,7 @@ export function attachCanvasEvents(renderer: Renderer, store: Store): void {
       if (cmd) {
         store.beginGesture();
         moved = false;
+        cancelled = false;
         if (target.getAttribute('data-sps') === 'handle-control') {
           mode = 'drag-control';
           dragCi = Number(target.getAttribute('data-sps-ci') ?? 0);
@@ -100,6 +109,7 @@ export function attachCanvasEvents(renderer: Renderer, store: Store): void {
     }
 
     if ((mode === 'drag-end' || mode === 'drag-control') && dragCmd) {
+      if (cancelled) return; // gesture aborted by Esc; ignore until release
       moved = true;
       const pt = renderer.toCanvas(e.clientX, e.clientY);
       const snapped = store.state.settings.snap && !e.ctrlKey ? snapPoint(renderer, pt) : pt;
@@ -156,7 +166,10 @@ export function attachCanvasEvents(renderer: Renderer, store: Store): void {
 
   const finish = (): void => {
     if (mode === 'drag-end' || mode === 'drag-control') {
-      if (moved) {
+      if (cancelled) {
+        // Already rolled back by cancelGesture(); drop the gesture silently.
+        cancelled = false;
+      } else if (moved) {
         store.update((s) => {
           s.drag = null;
         });

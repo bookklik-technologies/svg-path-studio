@@ -16,3 +16,5 @@ export { reversePath, reverseSubpath } from './reverse.js';
 export { changePathOrigin } from './origin.js';
 export { optimizePath } from './optimize.js';
 export { arcToCubicSegments, sampleArc } from './arc.js';
+export { createPathEditor } from './headless.js';
+export type { PathEditor, PathEditorOptions, PathEditorSnapshot } from './headless.js';

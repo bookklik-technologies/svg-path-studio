@@ -164,6 +164,31 @@ export class Store {
     this.restore(entry.pathAfter, entry.viewAfter);
   }
 
+  /**
+   * Abort the in-flight gesture and roll the path/view back to the state
+   * captured by beginGesture(). Used by Esc during a live drag: nothing was
+   * committed to history, so the mutation must be reverted by hand.
+   */
+  cancelGesture(): void {
+    if (!this.gestureBefore) {
+      this.state.drag = null;
+      return;
+    }
+    try {
+      this.state.path = new SpsPath(this.gestureBefore.path);
+      this.state.parseError = null;
+    } catch {
+      /* snapshot is always valid */
+    }
+    this.state.viewBox = { ...this.gestureBefore.view };
+    this.state.drag = null;
+    if (this.state.selection && !this.state.path.commands.includes(this.state.selection)) {
+      this.state.selection = null;
+    }
+    this.gestureBefore = null;
+    this.emit();
+  }
+
   private restore(d: string, view: ViewBox): void {
     try {
       this.state.path = new SpsPath(d);

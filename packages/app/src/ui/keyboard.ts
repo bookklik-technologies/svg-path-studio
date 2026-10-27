@@ -31,10 +31,9 @@ export function attachKeyboard(store: Store, openInsertMenu: () => void): void {
           s.insertion = null;
         });
       } else if (state.drag) {
-        // undo the in-flight drag: rollback via undo stack (gesture not ended)
-        store.update((s) => {
-          s.drag = null;
-        });
+        // Roll the in-flight drag back to its gesture snapshot. The canvas
+        // event layer also watches Esc to stop moving the old command object.
+        store.cancelGesture();
       }
       return;
     }

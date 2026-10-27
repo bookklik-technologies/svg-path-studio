@@ -842,8 +842,9 @@ body {
   background: var(--sps-panel);
   color: var(--sps-text);
   padding: 20px;
-  min-width: 420px;
-  max-width: 90vw;
+  width: min(560px, calc(100vw - 32px));
+  min-width: 0;
+  max-width: calc(100vw - 32px);
 }
 
 .sps-dialog::backdrop {
@@ -853,6 +854,16 @@ body {
 .sps-dialog h2 {
   margin: 0 0 14px;
   font-size: 17px;
+}
+
+/* Field rows wrap instead of forcing horizontal scroll on narrow screens. */
+.sps-dialog .sps-field-row {
+  flex-wrap: wrap;
+}
+
+.sps-dialog .sps-field-row > .sps-field,
+.sps-dialog .sps-color-field {
+  flex: 1 1 116px;
 }
 
 .sps-about-heading {
@@ -898,6 +909,71 @@ body {
   font-size: 11px;
   padding: 4px 0;
   font-family: 'JetBrains Mono', monospace;
+}
+
+/* ---------- Toast ---------- */
+.sps-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translate(-50%, 6px);
+  z-index: 2000;
+  max-width: min(90vw, 420px);
+  padding: 8px 14px;
+  border: 1px solid var(--sps-border);
+  border-radius: 8px;
+  background: var(--sps-panel-raised);
+  color: var(--sps-text);
+  font-size: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.sps-toast-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.sps-toast-error {
+  border-color: var(--sps-danger);
+}
+
+/* ---------- Color field ---------- */
+.sps-color-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.sps-color-field > span {
+  font-size: 10px;
+  color: var(--sps-text-dim);
+}
+
+.sps-color-row {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.sps-color-swatch {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--sps-border);
+  border-radius: 6px;
+  background: var(--sps-canvas);
+  cursor: pointer;
+}
+
+.sps-color-row .sps-input {
+  flex: 1;
+  min-width: 0;
 }
 
 /* ---------- Canvas cursor helper ---------- */

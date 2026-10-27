@@ -1,6 +1,7 @@
 /** Dialogs: Export as SVG, Share, About. */
 
 import type { Store } from '../state/store.js';
+import { copyText } from './toast.js';
 
 function dialogFrame(title: string): { dlg: HTMLDialogElement; body: HTMLElement } {
   const dlg = document.createElement('dialog');
@@ -47,6 +48,38 @@ function check(label: string, checked: boolean, onChange: (v: boolean) => void):
   return l;
 }
 
+/** Hex color entry: swatch picker synced with a text field. */
+function colorField(label: string, value: string, onChange: (v: string) => void): HTMLLabelElement {
+  const l = document.createElement('label');
+  l.className = 'sps-color-field';
+  l.innerHTML = `<span>${label}</span>`;
+  const row = document.createElement('div');
+  row.className = 'sps-color-row';
+  const text = document.createElement('input');
+  text.className = 'sps-input';
+  text.type = 'text';
+  text.spellcheck = false;
+  text.value = value;
+  const swatch = document.createElement('input');
+  swatch.className = 'sps-color-swatch';
+  swatch.type = 'color';
+  swatch.value = /^#[0-9a-f]{6}$/i.test(value) ? value : '#000000';
+  swatch.setAttribute('aria-label', `${label} picker`);
+  text.addEventListener('change', () => {
+    let v = text.value.trim();
+    if (/^#[0-9a-f]{3}$/i.test(v)) v = `#${v[1]}${v[1]}${v[2]}${v[2]}${v[3]}${v[3]}`;
+    if (/^#[0-9a-f]{6}$/i.test(v)) swatch.value = v.toLowerCase();
+    onChange(v);
+  });
+  swatch.addEventListener('input', () => {
+    text.value = swatch.value;
+    onChange(swatch.value);
+  });
+  row.append(swatch, text);
+  l.appendChild(row);
+  return l;
+}
+
 export function openExportDialog(store: Store): void {
   const { dlg, body } = dialogFrame('Export as SVG');
 
@@ -89,8 +122,8 @@ export function openExportDialog(store: Store): void {
 
   const colorRow = document.createElement('div');
   colorRow.className = 'sps-field-row';
-  colorRow.appendChild(field('Fill Color', fill, (v) => { fill = v; renderPreview(); }));
-  colorRow.appendChild(field('Stroke Color', stroke, (v) => { stroke = v; renderPreview(); }));
+  colorRow.appendChild(colorField('Fill Color', fill, (v) => { fill = v; renderPreview(); }));
+  colorRow.appendChild(colorField('Stroke Color', stroke, (v) => { stroke = v; renderPreview(); }));
   colorRow.appendChild(field('Stroke width', String(strokeWidth), (v) => { strokeWidth = Number(v) || 0.1; renderPreview(); }));
   body.appendChild(colorRow);
 
@@ -135,7 +168,7 @@ export function openExportDialog(store: Store): void {
   copyBtn.className = 'sps-btn';
   copyBtn.textContent = 'Copy to clipboard';
   copyBtn.addEventListener('click', () => {
-    void navigator.clipboard.writeText(exportSvgString(store, vb, { fillOn, fill, strokeOn, stroke, strokeWidth }));
+    void copyText(exportSvgString(store, vb, { fillOn, fill, strokeOn, stroke, strokeWidth }), 'SVG copied to clipboard');
   });
   const dl = document.createElement('button');
   dl.className = 'sps-btn sps-btn-primary';
@@ -168,23 +201,34 @@ export function exportSvgString(store: Store, vb: Store['state']['viewBox'], sty
   return `<svg ${attrs.join(' ')}>\n  <path ${pathAttrs.join(' ')}/>\n</svg>\n`;
 }
 
-export function openShareDialog(store: Store, makeShareUrl: (s: Store) => string): void {
+export function openShareDialog(store: Store, makeShareUrl: (s: Store) => Promise<string>): void {
   const { dlg, body } = dialogFrame('Share');
-  const url = makeShareUrl(store);
   const row = document.createElement('div');
   row.className = 'sps-field-row';
-  const input = field('Shareable URL', url);
-  input.querySelector('input')!.readOnly = true;
+  const input = field('Shareable URL', '');
+  const urlInput = input.querySelector('input')!;
+  urlInput.readOnly = true;
+  urlInput.placeholder = 'Building link…';
   input.style.flex = '1';
   row.appendChild(input);
   body.appendChild(row);
+
+  void makeShareUrl(store).then((url) => {
+    if (!dlg.open) return;
+    urlInput.value = url;
+    urlInput.placeholder = '';
+  });
 
   const actions = dlg.querySelector('.sps-dialog-actions')!;
   const copy = document.createElement('button');
   copy.className = 'sps-btn sps-btn-primary';
   copy.textContent = 'Copy to clipboard';
+  copy.disabled = true;
   copy.addEventListener('click', () => {
-    void navigator.clipboard.writeText(url);
+    void copyText(urlInput.value, 'Share link copied');
+  });
+  urlInput.addEventListener('input', () => {
+    copy.disabled = !urlInput.value;
   });
   actions.prepend(copy);
 }

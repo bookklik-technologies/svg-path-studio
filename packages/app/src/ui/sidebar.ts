@@ -7,6 +7,7 @@ import { icon } from './icons.js';
 import { openCommandMenu } from './menu.js';
 import { rewriteRelative, rewriteAbsolute } from './pathHelpers.js';
 import { reversePath, optimizePath } from '@svg-path-studio/core';
+import { copyText } from './toast.js';
 
 function panelFrame(title: string, count?: HTMLElement): { wrap: HTMLElement; body: HTMLElement } {
   const wrap = document.createElement('section');
@@ -118,7 +119,7 @@ export function buildPathPanel(store: Store, _renderer: Renderer): HTMLElement {
   copy.setAttribute('aria-label', 'Copy path to clipboard');
   copy.innerHTML = icon('copy');
   copy.addEventListener('click', () => {
-    void navigator.clipboard.writeText(store.state.path.asString(store.state.settings.precision, store.state.settings.minify));
+    void copyText(store.state.path.asString(store.state.settings.precision, store.state.settings.minify), 'Path copied to clipboard');
   });
 
   const add = document.createElement('button');

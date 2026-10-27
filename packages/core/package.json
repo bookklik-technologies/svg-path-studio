@@ -1,22 +1,48 @@
 {
   "name": "@svg-path-studio/core",
-  "version": "0.1.0",
-  "description": "Zero-dependency SVG path parsing, serialization and manipulation engine powering SVG Path Studio.",
+  "version": "0.2.0",
+  "description": "Zero-dependency SVG path engine and headless editor for Node.js and browser embeds.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bookklik-technologies/svg-path-studio.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/bookklik-technologies/svg-path-studio#readme",
+  "bugs": {
+    "url": "https://github.com/bookklik-technologies/svg-path-studio/issues"
+  },
+  "keywords": ["svg", "path", "editor", "headless", "embed", "typescript"],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
-    }
+    },
+    "./headless": {
+      "types": "./dist/headless.d.ts",
+      "import": "./dist/headless.js",
+      "default": "./dist/headless.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
     "test": "vitest run",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
