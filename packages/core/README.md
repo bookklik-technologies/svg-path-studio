@@ -1,11 +1,11 @@
-# @svg-path-studio/core
+# @bookklik/svg-path-studio
 
 Zero-dependency SVG path engine and headless editor. Build your own interface without loading SVG Path Studio's ribbon, styles, storage, clipboard handlers, keyboard shortcuts or service worker.
 
 ## Installation
 
 ```sh
-npm install @svg-path-studio/core
+npm install @bookklik/svg-path-studio
 ```
 
 ES modules with TypeScript declarations; Node.js 18+ or a modern browser/bundler. CommonJS consumers can use dynamic `import()`. No framework, DOM or runtime dependencies are required. This is a library, not an iframe or a prebuilt visual editor: your application owns rendering, pointer handling, selection, viewport and accessibility.
@@ -13,8 +13,8 @@ ES modules with TypeScript declarations; Node.js 18+ or a modern browser/bundler
 ## Headless usage
 
 ```ts
-import { createPathEditor } from '@svg-path-studio/core/headless';
-import { optimizePath } from '@svg-path-studio/core';
+import { createPathEditor } from '@bookklik/svg-path-studio/headless';
+import { optimizePath } from '@bookklik/svg-path-studio';
 
 const editor = createPathEditor({ path: 'M0 0 L10 10', historyLimit: 200 });
 const unsubscribe = editor.subscribe(() => {
@@ -59,7 +59,7 @@ Group related changes in one `edit` callback for one undo step. For interactive 
 Use this in an application compiled by a bundler. The host HTML supplies an SVG `<path id="preview-path">` and buttons with IDs `translate` and `undo`:
 
 ```ts
-import { createPathEditor } from '@svg-path-studio/core/headless';
+import { createPathEditor } from '@bookklik/svg-path-studio/headless';
 
 const editor = createPathEditor({ path: 'M2 2 L8 8' });
 const preview = document.querySelector<SVGPathElement>('#preview-path')!;
@@ -91,7 +91,7 @@ Set SVG attributes rather than interpolating untrusted markup. The package never
 ## Stateless engine
 
 ```ts
-import { SpsPath, reversePath, optimizePath, SpsParseError } from '@svg-path-studio/core';
+import { SpsPath, reversePath, optimizePath, SpsParseError } from '@bookklik/svg-path-studio';
 
 const path = new SpsPath('M0 0 L10 10');
 path.scale(2, 2);

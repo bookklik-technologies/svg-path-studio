@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { Store, defaultState } from '../src/state/store.js';
-import { reversePath, optimizePath } from '@svg-path-studio/core';
+import { reversePath, optimizePath } from '@bookklik/svg-path-studio';
 
 describe('app state wiring (headless smoke)', () => {
   it('store parses, tracks errors, and history round-trips', () => {

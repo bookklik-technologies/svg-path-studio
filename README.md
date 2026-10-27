@@ -24,7 +24,7 @@ Distributed under the [MIT License](./LICENSE).
 
 | Package | Purpose |
 |---|---|
-| [`packages/core`](./packages/core) | `@svg-path-studio/core` — zero-dependency path engine and headless editor with subscriptions, atomic edits and undo/redo. Usable standalone in Node or the browser. |
+| [`packages/core`](./packages/core) | `@bookklik/svg-path-studio` — zero-dependency path engine and headless editor with subscriptions, atomic edits and undo/redo. Usable standalone in Node or the browser. |
 | [`packages/app`](./packages/app) | The editor application — framework-free TypeScript + Vite. |
 
 ## Development
@@ -50,12 +50,12 @@ The app uses relative asset and service worker URLs, so the same build supports 
 
 ## Core usage
 
-For a custom UI without the app's chrome or browser side effects, use `createPathEditor` from `@svg-path-studio/core/headless`. See the [headless API and browser integration guide](./packages/core/README.md). This is a UI-independent controller, not a prebuilt canvas or iframe embed.
+For a custom UI without the app's chrome or browser side effects, use `createPathEditor` from `@bookklik/svg-path-studio/headless`. See the [headless API and browser integration guide](./packages/core/README.md). This is a UI-independent controller, not a prebuilt canvas or iframe embed.
 
 The root and app packages stay private. See [PUBLISHING.md](./PUBLISHING.md) for package checks, tarball creation and manual npm publication; nothing publishes automatically.
 
 ```typescript
-import { SpsPath, reversePath, optimizePath } from '@svg-path-studio/core';
+import { SpsPath, reversePath, optimizePath } from '@bookklik/svg-path-studio';
 
 const path = new SpsPath('M 4 8 L 10 1 C 6 10 6 11 7 10 A 1.42 1.42 0 0 1 6 13 Z');
 

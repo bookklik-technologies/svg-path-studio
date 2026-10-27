@@ -23,7 +23,7 @@ importers:
       '@bookklik/senangstart-icons':
         specifier: ^1.0.16
         version: 1.0.16
-      '@svg-path-studio/core':
+      '@bookklik/svg-path-studio':
         specifier: workspace:*
         version: link:../core
     devDependencies:

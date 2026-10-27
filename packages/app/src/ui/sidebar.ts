@@ -2,11 +2,11 @@
 
 import type { Store } from '../state/store.js';
 import type { Renderer } from '../render/renderer.js';
-import { SpsPath } from '@svg-path-studio/core';
+import { SpsPath } from '@bookklik/svg-path-studio';
 import { icon } from './icons.js';
 import { openCommandMenu } from './menu.js';
 import { rewriteRelative, rewriteAbsolute } from './pathHelpers.js';
-import { reversePath, optimizePath } from '@svg-path-studio/core';
+import { reversePath, optimizePath } from '@bookklik/svg-path-studio';
 import { copyText } from './toast.js';
 
 function panelFrame(title: string, count?: HTMLElement): { wrap: HTMLElement; body: HTMLElement } {

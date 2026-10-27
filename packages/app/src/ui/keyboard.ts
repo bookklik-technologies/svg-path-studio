@@ -1,7 +1,7 @@
 /** Keyboard shortcuts (parity with the reference behavior). */
 
 import type { Store } from '../state/store.js';
-import type { CommandType } from '@svg-path-studio/core';
+import type { CommandType } from '@bookklik/svg-path-studio';
 
 const INSERT_KEYS: Record<string, CommandType> = {
   m: 'M', l: 'L', v: 'V', h: 'H', c: 'C', s: 'S', q: 'Q', t: 'T', a: 'A', z: 'Z'

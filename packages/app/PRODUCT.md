@@ -26,7 +26,7 @@ Confirmed durable claim: precision path editing that runs entirely in the browse
 
 ## Capabilities and Constraints
 
-- Monorepo: `packages/core` (`@svg-path-studio/core`, zero-dependency path engine: parser, serializer, transforms, conversions, reverse, optimize; standalone in Node or browser; invalid input throws `SpsParseError` with exact index and reason) and `packages/app` (framework-free TypeScript + Vite editor).
+- Monorepo: `packages/core` (`@bookklik/svg-path-studio`, zero-dependency path engine: parser, serializer, transforms, conversions, reverse, optimize; standalone in Node or browser; invalid input throws `SpsParseError` with exact index and reason) and `packages/app` (framework-free TypeScript + Vite editor).
 - Interactive canvas: drag endpoints and control handles, snap to grid, pan by drag, wheel/toolbar zoom.
 - Command panel: one row per command; type chip toggles relative (orange) / absolute (violet); per-row menu (insert after, convert to, start path/subpath, reverse subpath, delete).
 - Path operations: scale, translate, rotate, round coordinates, relative/absolute conversion, reverse, 7-flag optimizer (shorthand promotion, H/V lines, shortest relative/absolute form, reverse-if-shorter, and more).

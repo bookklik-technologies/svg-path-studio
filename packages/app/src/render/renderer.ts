@@ -7,7 +7,7 @@
 import type { EditorState, Store, ViewBox } from '../state/store.js';
 import { icon } from '../ui/icons.js';
 import { openCommandMenu } from '../ui/menu.js';
-import { SpsCommand, SpsPath } from '@svg-path-studio/core';
+import { SpsCommand, SpsPath } from '@bookklik/svg-path-studio';
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
 

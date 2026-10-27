@@ -1,5 +1,5 @@
-import { changePathOrigin } from '@svg-path-studio/core';
-import type { SpsCommand, Point } from '@svg-path-studio/core';
+import { changePathOrigin } from '@bookklik/svg-path-studio';
+import type { SpsCommand, Point } from '@bookklik/svg-path-studio';
 
 /** Rewrite a command's values from absolute to relative (keeping geometry). */
 export function rewriteRelative(cmd: SpsCommand, S: Point): void {
@@ -29,7 +29,7 @@ export function rewriteAbsolute(cmd: SpsCommand, S: Point): void {
  * Rotate the command list so that the command at `index` becomes the first
  * drawn segment of its subpath. For the whole path, move that subpath first.
  */
-export function rotatePathOrigin(s: { path: import('@svg-path-studio/core').SpsPath; selection: SpsCommand | null }, index: number, subpathOnly: boolean): void {
+export function rotatePathOrigin(s: { path: import('@bookklik/svg-path-studio').SpsPath; selection: SpsCommand | null }, index: number, subpathOnly: boolean): void {
   if (!s.path.commands[index] || s.path.commands[index].type === 'Z') return;
   // Materialize relative coordinates before reordering segments/subpaths.
   s.path.setRelative(false);

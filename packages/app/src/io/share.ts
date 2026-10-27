@@ -4,7 +4,7 @@
  */
 
 import type { Store } from '../state/store.js';
-import { SpsPath } from '@svg-path-studio/core';
+import { SpsPath } from '@bookklik/svg-path-studio';
 
 export interface SharedState {
   d: string;

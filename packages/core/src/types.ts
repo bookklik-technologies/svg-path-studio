@@ -1,4 +1,4 @@
-/** Shared types and errors for @svg-path-studio/core */
+/** Shared types and errors for @bookklik/svg-path-studio */
 
 export interface Point {
   x: number;

@@ -2,8 +2,8 @@
 
 import type { Store } from '../state/store.js';
 import type { Renderer } from '../render/renderer.js';
-import { SpsCommand, reverseSubpath } from '@svg-path-studio/core';
-import type { CommandType } from '@svg-path-studio/core';
+import { SpsCommand, reverseSubpath } from '@bookklik/svg-path-studio';
+import type { CommandType } from '@bookklik/svg-path-studio';
 import { icon } from './icons.js';
 import { rewriteRelative, rewriteAbsolute, rotatePathOrigin } from './pathHelpers.js';
 

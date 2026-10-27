@@ -1,5 +1,5 @@
 {
-  "name": "@svg-path-studio/core",
+  "name": "@bookklik/svg-path-studio",
   "version": "0.2.0",
   "description": "Zero-dependency SVG path engine and headless editor for Node.js and browser embeds.",
   "license": "MIT",

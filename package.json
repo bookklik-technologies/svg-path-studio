@@ -15,7 +15,7 @@
     "test": "pnpm -r test",
     "typecheck": "pnpm -r typecheck",
     "lint": "eslint .",
-    "package:check": "pnpm --filter @svg-path-studio/core build && node scripts/check-package.mjs"
+    "package:check": "pnpm --filter @bookklik/svg-path-studio build && node scripts/check-package.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

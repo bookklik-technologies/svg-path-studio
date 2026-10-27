@@ -1,6 +1,6 @@
 /** Office-style ribbon: tabs, labeled tool groups, and quick access actions. */
-import { SpsCommand } from '@svg-path-studio/core';
-import type { CommandType } from '@svg-path-studio/core';
+import { SpsCommand } from '@bookklik/svg-path-studio';
+import type { CommandType } from '@bookklik/svg-path-studio';
 import type { Store } from '../state/store.js';
 import type { Theme } from '../state/store.js';
 import type { Renderer } from '../render/renderer.js';

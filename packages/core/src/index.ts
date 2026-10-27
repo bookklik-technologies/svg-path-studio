@@ -1,5 +1,5 @@
 /**
- * @svg-path-studio/core — zero-dependency SVG path engine.
+ * @bookklik/svg-path-studio — zero-dependency SVG path engine.
  *
  * Public API:
  * - {@link SpsPath}: parse, serialize, transform, edit an SVG path

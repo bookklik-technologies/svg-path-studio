@@ -5,7 +5,7 @@
 
 import type { Renderer } from './renderer.js';
 import type { Store } from '../state/store.js';
-import { SpsCommand } from '@svg-path-studio/core';
+import { SpsCommand } from '@bookklik/svg-path-studio';
 import { openCommandMenu } from '../ui/menu.js';
 
 export function attachCanvasEvents(renderer: Renderer, store: Store): void {

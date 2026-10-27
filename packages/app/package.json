@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@bookklik/senangstart-icons": "^1.0.16",
-    "@svg-path-studio/core": "workspace:*"
+    "@bookklik/svg-path-studio": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.20.5",

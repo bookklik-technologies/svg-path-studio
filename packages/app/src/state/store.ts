@@ -4,8 +4,8 @@
  * via a tiny emitter with rAF batching done by the renderer.
  */
 
-import { SpsPath, SpsParseError } from '@svg-path-studio/core';
-import type { SpsCommand } from '@svg-path-studio/core';
+import { SpsPath, SpsParseError } from '@bookklik/svg-path-studio';
+import type { SpsCommand } from '@bookklik/svg-path-studio';
 
 export type Theme = 'dark' | 'light';
 
